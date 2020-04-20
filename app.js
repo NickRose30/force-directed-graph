@@ -1,37 +1,37 @@
 const width = 1250;
-const height = 1200;
+const height = 800;
 
 const nodes = [
-  { color: "red", size: 5, },
-  { color: "orange", size: 10 },
-  { color: "yellow", size: 15 },
-  { color: "green", size: 20 },
-  { color: "blue", size: 25 },
-  { color: "purple", size: 30 },
-  { color: "grey", size: 35 },
-  { color: "pink", size: 18 }
+  { node: 'A', size: 5 },
+  { node: 'B', size: 10 },
+  { node: 'C', size: 15 },
+  { node: 'D', size: 20 },
+  { node: 'E', size: 25 },
+  { node: 'F', size: 30 },
+  { node: 'G', size: 35 },
+  { node: 'H', size: 18 },
 ];
 
 // links variable, each one with fields specifying the two ends of the link
 // will need to add another force (d3.forceLink) to the simulation in order
 // for the links to influence the behavior of the nodes
 const links = [
-  { source: 'red', target: 'orange' },
-  { source: 'orange', target: 'yellow' },
-  { source: 'yellow', target: 'green' },
-  { source: 'green', target: 'blue' },
-  { source: 'blue', target: 'purple' },
-  { source: 'purple', target: 'red' },
-  { source: 'green', target: 'red' },
-  { source: 'purple', target: 'grey' },
-  { source: 'grey', target: 'orange' },
-  { source: 'yellow', target: 'pink' },
-  { source: 'pink', target: 'orange' },
+  { source: 'A', target: 'B' },
+  { source: 'B', target: 'C' },
+  { source: 'C', target: 'D' },
+  { source: 'D', target: 'E' },
+  { source: 'E', target: 'F' },
+  { source: 'F', target: 'A' },
+  { source: 'D', target: 'A' },
+  { source: 'F', target: 'G' },
+  { source: 'G', target: 'B' },
+  { source: 'C', target: 'H' },
+  { source: 'H', target: 'B' },
 ];
 
-const svg = d3.select("svg")
-              .attr("width", width)
-              .attr("height", height);
+const svg = d3.select('svg')
+              .attr('width', width)
+              .attr('height', height);
 
 
 /**
@@ -62,20 +62,20 @@ const dragEnd = node => {
 };
 
 const linkSelection = svg
-                      .selectAll("line")
+                      .selectAll('line')
                       .data(links)
                       .enter()
-                      .append("line")
-                        .attr("stroke", 'black')
-                        .attr("stroke-width", 1);
+                      .append('line')
+                        .attr('stroke', 'slategrey')
+                        .attr('stroke-width', 1);
 
 const nodeSelection = svg
-                      .selectAll("circle")
+                      .selectAll('circle')
                       .data(nodes)
                       .enter()
-                      .append("circle")
-                        .attr("r", d => d.size)
-                        .attr("fill", d => d.color)
+                      .append('circle')
+                        .attr('r', d => d.size)
+                        .attr('fill', 'white')
                         // add support for dragging to each circle 
                         .call(d3.drag()
                                 .on('start', dragStart)
@@ -94,7 +94,7 @@ const simulation = d3.forceSimulation(nodes);
 // this is a center force, which tugs on the nodes so that their average position lies
 // in the designated center. the first argument here is just. it can be whatever you
 // want and will only be used if you need to access the force later
-simulation.force('center', d3.forceCenter(width / 2, height / 4));
+simulation.force('center', d3.forceCenter(width / 2, height / 3));
 
 // FORCE 2: REPEL EACH OTHER
 // add another force to the simulation. up to this point all the nodes just get pulled into
@@ -110,14 +110,14 @@ simulation.force('nodes', d3.forceManyBody().strength(-70));
 // forceLink - creates the link force with the provided links array.
 // .id - d3 needs to be able to translate between the link and the source/target nodes. by
 // default it assumes the values for source and target are indices in the nodes array, but
-// actually they are the values in the 'color' field of each node. we could change our links
+// actually they are the values in the 'node' field of each node. we could change our links
 // array so that source and target reference indices, but instead we'll use the .id method.
 // .distance - specify a desired distance between nodes, other forces can affect this. by 
 // passing it a value based on the size of the source and target, we create the effect of
 // larger nodes having a larger repulsize force than smaller nodes
 simulation.force('links',
                   d3.forceLink(links)
-                    .id(node => node.color)
+                    .id(node => node.node)
                     .distance(d => 5 * (d.source.size + d.target.size))
                 );
 

@@ -1,3 +1,13 @@
+html, body {
+  background-color: #171616;
+}
+
+h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  color: white;
+}
+
 svg {
   margin: 0 auto;
   display: block;
